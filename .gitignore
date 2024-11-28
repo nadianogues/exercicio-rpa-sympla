@@ -1,0 +1,10 @@
+# Ignorar a pasta de logs
+logs/
+
+# Ignorar arquivos de configuração do IDE
+.idea/
+.vscode/
+
+# Ignorar arquivos compilados Python
+*.pyc
+__pycache__/
