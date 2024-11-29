@@ -1,6 +1,12 @@
 # Ignorar a pasta de logs
 logs/
 
+# Ignorar a pasta de resultados
+resultados/
+
+# Ignorar a pasta de banco de dados
+banco de dados/
+
 # Ignorar arquivos de configuração do IDE
 .idea/
 .vscode/
@@ -8,3 +14,6 @@ logs/
 # Ignorar arquivos compilados Python
 *.pyc
 __pycache__/
+
+# Ignorar Jupyter Notebook arquivos
+*.ipynb
