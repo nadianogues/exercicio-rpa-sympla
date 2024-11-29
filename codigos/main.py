@@ -4,15 +4,41 @@ from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from extrair_informacoes_estados import acessar_extrair_dados
+from ler_estruturar_arquivo import ler_estruturar_arquivo_entrada
 
 def main():
     """
     Função principal que organiza o fluxo de execução do robô.
     """
+    # Variaveis 
     url_estados_brasileiros = "https://inanyplace.blogspot.com/2017/01/lista-de-estados-brasileiros-sigla-estado-capital-e-regiao.html"
-    
+    arquivo_populacao_capital = r'C:\Users\Nadia Nogues\Documents\2024\sympla\exercicio-rpa-sympla\arquivo\PopulaçãoxCapital.xlsx'
+
+    # Manipulação dos diretorios para organização dos arquivos
+    diretorio_atual = os.path.realpath('__file__')
+    diretorio_atual = os.path.dirname(diretorio_atual)
+    diretorio_atual = os.path.dirname(diretorio_atual)
+
+    pasta_log = os.path.join(diretorio_atual,"logs")
+    pasta_resultados = os.path.join(diretorio_atual,"resultados")
+    pasta_bd = os.path.join(diretorio_atual,"banco de dados")
+
+    # Cria o diretório 'logs' se não existir
+    if not os.path.exists(pasta_log):
+        os.makedirs(pasta_log)
+
+    # Cria o diretório 'resultados' se não existir
+        if not os.path.exists(pasta_resultados):
+            os.makedirs(pasta_resultados)
+            
+    # Cria o diretório 'banco de dados' se não existir
+        if not os.path.exists(pasta_bd):
+            os.makedirs(pasta_bd)
+            
     # Configura o log
     configurar_log()
+    
+    log.info("Inicio da automação")
     
     # Configura o WebDriver
     driver = inicializar_driver()
@@ -22,9 +48,16 @@ def main():
         dados_estados = acessar_extrair_dados(
             driver, url_estados_brasileiros
         )
+        
+        # Le e estrutura o arquivo de entrada
+        ler_estruturar_arquivo_entrada(
+            arquivo_populacao_capital, dados_estados
+        )
+        
     finally:
         # Fecha o WebDriver
         fechar_driver(driver)
+        log.info("Fim da automação")
 
 def configurar_log():
     '''
