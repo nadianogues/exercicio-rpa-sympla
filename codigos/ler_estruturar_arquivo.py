@@ -42,5 +42,7 @@ def ler_estruturar_arquivo_entrada(arquivo_populacao_capital, dados_estados):
         
         log.info("Fim da função de ler e estruturar o arquivo de entrada")
         
+        return df_unificado
+        
     except Exception as e:
-        log.error(f"Erro ao configurar o log: {e}")
+        log.error(f"Erro ana função ler_estruturar_arquivo_entrada: {e}")
