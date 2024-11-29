@@ -38,7 +38,7 @@ def main():
             os.makedirs(pasta_bd)
             
     # Configura o log
-    configurar_log()
+    configurar_log(pasta_log)
     
     log.info("Inicio da automação")
     
@@ -68,14 +68,16 @@ def main():
         fechar_driver(driver)
         log.info("Fim da automação")
 
-def configurar_log():
+def configurar_log(pasta_log):
     '''
     Configuração incial do log
+    
+    Args:
+    pasta_log (str): Caminho da pasta para os logs
     '''
     
     try:
         # Cria o diretório 'logs' se não existir
-        pasta_log = os.path.join(os.path.dirname(os.path.realpath('__file__')),"logs")
         if not os.path.exists(pasta_log):
             os.makedirs(pasta_log)
 
