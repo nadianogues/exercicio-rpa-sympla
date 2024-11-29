@@ -2,6 +2,7 @@ import os
 import sqlite3
 import pandas as pd
 import xlwings as xw
+import logging as log
 
 def criar_inserir_banco_dados(pasta_bd, df_unificado):
     """
@@ -17,13 +18,17 @@ def criar_inserir_banco_dados(pasta_bd, df_unificado):
     conexao (Connection): Conexão para manipulação de dados no SQL.
     """
     
+    log.info("Início da função de criar e inserir dados no bd")
+    
     caminho_bd = os.path.join(pasta_bd, 'estados.db')
 
-    # Conectar ao banco de dados SQLite (será criado se não existir)
+    # Conecta ao banco de dados SQLite (será criado se não existir)
+    log.info("Conecta ao banco de dados")
     conexao = sqlite3.connect(caminho_bd)
     cursor = conexao.cursor()
 
-    # Criar a tabela 'estados' se ela não existir
+    # Cria a tabela 'estados' se ela não existir
+    log.info("Cria a tabela 'estados.bd'")
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS estados (
         estado TEXT PRIMARY KEY,
@@ -34,6 +39,7 @@ def criar_inserir_banco_dados(pasta_bd, df_unificado):
     ''')
 
     # Inserir ou atualizar os dados no banco de dados
+    log.info("Insere os dados na tabela")
     for _, row in df_unificado.iterrows():
         cursor.execute('''
         INSERT OR REPLACE INTO estados (estado, capital, regiao, populacao)
@@ -42,7 +48,10 @@ def criar_inserir_banco_dados(pasta_bd, df_unificado):
         
     
     # Salva as alterações
+    log.info("Salva as informações")
     conexao.commit()
+    
+    log.info("Fim da função de criar e inserir dados no bd")
         
     return conexao
 
@@ -62,8 +71,10 @@ def consultar_salvar_dados(conexao, pasta_resultados):
     pasta_resultados (str): Caminho da pasta para salvar os resultados
     das consultas.    
     """
-
+    log.info("Início da função de consultar e salvar dados")
+    
     # Consulta as 3 regiões mais populosas
+    log.info("Consulta as 3 regiões mais populosas")
     query_regioes_populosas = '''
     SELECT regiao, SUM(populacao) AS populacao_total
     FROM estados
@@ -73,6 +84,7 @@ def consultar_salvar_dados(conexao, pasta_resultados):
     '''
 
     # Define nome do arquivo e caminho
+    log.info("Salvando o arquivo top3_regioes_populosas.csv")
     arquivo_regioes_populosas = os.path.join(pasta_resultados, 'top3_regioes_populosas.csv')
 
     # Executa consulta e exporta para CSV
@@ -80,6 +92,7 @@ def consultar_salvar_dados(conexao, pasta_resultados):
     df_regioes_populosas.to_csv(arquivo_regioes_populosas, index=False)
 
     # Consulta regiões e quantidade de capitais
+    log.info("Consulta regiões e quantidade de capitais")
     query_regioes_n_capitais = '''
     SELECT regiao, COUNT(DISTINCT capital) AS quantidade_capitais
     FROM estados
@@ -105,9 +118,11 @@ def consultar_salvar_dados(conexao, pasta_resultados):
         planilha.range('A2').value = df_regioes_n_capitais.values.tolist()
         
         # Salva o arquivo no formato .xls
+        log.info("Salvando o arquivo regioes_n_capitais.xls")
         arq_excel.save(arquivo_regioes_n_capitais)
 
     # Consulta os 2 estados com as capitais mais populosas
+    log.info("Consulta os 2 estados com as capitais mais populosas")
     query_estados_mais_populosos = '''
     SELECT estado, capital, populacao
     FROM estados
@@ -116,6 +131,7 @@ def consultar_salvar_dados(conexao, pasta_resultados):
     '''
 
     # Define nome do arquivo e caminho
+    
     arquivo_estados_mais_populosos = os.path.join(pasta_resultados, 'estados_mais_populosos.xls')
 
     # Executa consulta e exportar para XLS
@@ -133,8 +149,14 @@ def consultar_salvar_dados(conexao, pasta_resultados):
         planilha.range('A2').value = df_estados_mais_populosos.values.tolist()
         
         # Salva o arquivo no formato .xls
+        log.info("Salvando o arquivo estados_mais_populosos.xls")
         arq_excel.save(arquivo_estados_mais_populosos)
 
+
+    log.info(f"Resultados com os arquivos salvos em: {pasta_resultados}")
+    
     # Fecha a conexão
     conexao.close()
+    
+    log.info("Fim da função de consultar e salvar dados")
     
