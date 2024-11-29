@@ -52,13 +52,13 @@ def main():
         )
         
         # Le e estrutura o arquivo de entrada
-        ler_estruturar_arquivo_entrada(
+        df_unificado = ler_estruturar_arquivo_entrada(
             arquivo_populacao_capital, dados_estados
         )
         
         # Manipula o banco de dados
         # Cria e insere dados no bd
-        conexao = criar_inserir_banco_dados(arquivo_populacao_capital, pasta_bd)
+        conexao = criar_inserir_banco_dados(pasta_bd, df_unificado)
         
         # Consulta no banco de dados e salva os dados
         consultar_salvar_dados(conexao, pasta_resultados)
