@@ -3,14 +3,16 @@ import logging as log
 from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+
 from extrair_informacoes_estados import acessar_extrair_dados
 from ler_estruturar_arquivo import ler_estruturar_arquivo_entrada
+from manipular_banco_dados import criar_inserir_banco_dados, consultar_salvar_dados
 
 def main():
     """
     Função principal que organiza o fluxo de execução do robô.
     """
-    # Variaveis 
+    # Variáveis 
     url_estados_brasileiros = "https://inanyplace.blogspot.com/2017/01/lista-de-estados-brasileiros-sigla-estado-capital-e-regiao.html"
     arquivo_populacao_capital = r'C:\Users\Nadia Nogues\Documents\2024\sympla\exercicio-rpa-sympla\arquivo\PopulaçãoxCapital.xlsx'
 
@@ -53,6 +55,13 @@ def main():
         ler_estruturar_arquivo_entrada(
             arquivo_populacao_capital, dados_estados
         )
+        
+        # Manipula o banco de dados
+        # Cria e insere dados no bd
+        conexao = criar_inserir_banco_dados(arquivo_populacao_capital, pasta_bd)
+        
+        # Consulta no banco de dados e salva os dados
+        consultar_salvar_dados(conexao, pasta_resultados)
         
     finally:
         # Fecha o WebDriver
