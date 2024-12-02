@@ -3,14 +3,16 @@ import logging as log
 from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+
 from extrair_informacoes_estados import acessar_extrair_dados
 from ler_estruturar_arquivo import ler_estruturar_arquivo_entrada
+from manipular_banco_dados import criar_inserir_banco_dados, consultar_salvar_dados
 
 def main():
     """
     Função principal que organiza o fluxo de execução do robô.
     """
-    # Variaveis 
+    # Variáveis 
     url_estados_brasileiros = "https://inanyplace.blogspot.com/2017/01/lista-de-estados-brasileiros-sigla-estado-capital-e-regiao.html"
     arquivo_populacao_capital = r'C:\Users\Nadia Nogues\Documents\2024\sympla\exercicio-rpa-sympla\arquivo\PopulaçãoxCapital.xlsx'
 
@@ -36,9 +38,9 @@ def main():
             os.makedirs(pasta_bd)
             
     # Configura o log
-    configurar_log()
+    configurar_log(pasta_log)
     
-    log.info("Inicio da automação")
+    log.info("Início da automação")
     
     # Configura o WebDriver
     driver = inicializar_driver()
@@ -50,23 +52,37 @@ def main():
         )
         
         # Le e estrutura o arquivo de entrada
-        ler_estruturar_arquivo_entrada(
+        df_unificado = ler_estruturar_arquivo_entrada(
             arquivo_populacao_capital, dados_estados
         )
+        
+        # Manipula o banco de dados
+        # Cria e insere dados no bd
+        conexao = criar_inserir_banco_dados(pasta_bd, df_unificado)
+        
+        # Consulta no banco de dados e salva os dados
+        consultar_salvar_dados(conexao, pasta_resultados)
+        
+        log.info("Finalizou com sucesso")
+        
+    except ValueError as e:
+        log.error(f"Impossível prosseguir, automação parou!")
         
     finally:
         # Fecha o WebDriver
         fechar_driver(driver)
         log.info("Fim da automação")
 
-def configurar_log():
+def configurar_log(pasta_log):
     '''
     Configuração incial do log
+    
+    Args:
+    pasta_log (str): Caminho da pasta para os logs
     '''
     
     try:
         # Cria o diretório 'logs' se não existir
-        pasta_log = os.path.join(os.path.dirname(os.path.realpath('__file__')),"logs")
         if not os.path.exists(pasta_log):
             os.makedirs(pasta_log)
 
@@ -77,11 +93,12 @@ def configurar_log():
         # Configura o logging
         log.basicConfig(
             level=log.INFO,  # Define o nível mínimo de log
-            format='%(asctime)s - %(levelname)s - %(message)s',  # Formato do log
+            format='%(asctime)s - %(levelname)s - Linha: %(lineno)d - %(funcName)s - %(message)s',  # Formato do log
             handlers=[
                 log.FileHandler(arquivo_log),  # Grava os logs no arquivo com data no nome
                 log.StreamHandler()  # Exibe os logs no console também
-            ]
+            ],
+            datefmt='%Y-%m-%d %H:%M'  # Formato da data e hora sem segundos
         )
     except Exception as e:
         log.error(f"Erro ao configurar o log: {e}")

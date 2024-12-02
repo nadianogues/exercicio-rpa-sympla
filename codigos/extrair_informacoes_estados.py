@@ -16,12 +16,12 @@ def acessar_extrair_dados(driver, url_estados_brasileiros):
     """
     
     try:
-        log.info("Acessando url com os estados brasileiros")
+        log.info("Acessando site com os estados brasileiros")
         driver.get(url_estados_brasileiros)
 
         try:
             # Aguarda até que a tabela esteja presente na página
-            log.info("Aguardando a tabela ser carregada")
+            log.info("Aguardando a tabela com os estados ser carregada")
             WebDriverWait(url_estados_brasileiros, 120).until(
                 EC.visibility_of(driver.find_element(
                     By.XPATH, '//*[@id="post-body-161801306241062754"]/blockquote/div[2]/table')
@@ -29,6 +29,7 @@ def acessar_extrair_dados(driver, url_estados_brasileiros):
             )
         except Exception as e:
             log.error(f"Erro ao acessar a tabela na página {e}")
+            raise ValueError()
 
         # Localiza a tabela com os dados dos estados
         log.info("Extraindo as informações da tabela")
@@ -51,10 +52,19 @@ def acessar_extrair_dados(driver, url_estados_brasileiros):
             regiao = colunas[3].text.strip()  # Região
             
             dados_estados.append((estado, capital, regiao))
+                
+        quant_estados = len(dados_estados)
+    
+        if quant_estados != 26:
+            log.error(f"Erro: Esperado 26 estados, mas foram extraídos {quant_estados}.")
+            raise ValueError()
         
-        log.info(f"Dados extraidos da tabela: {dados_estados}")
-        
+        log.info("Dados extraidos da tabela: ")
+        log.info("Nome do estado - Capital - Região")
+        log.info(f"\n{dados_estados}")
+                
         return dados_estados
     
     except Exception as e:
         log.error(f"Erro ao extrair dados: {e}")
+        raise ValueError()
