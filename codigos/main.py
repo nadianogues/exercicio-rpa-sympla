@@ -14,7 +14,6 @@ def main():
     """
     # Variáveis 
     url_estados_brasileiros = "https://inanyplace.blogspot.com/2017/01/lista-de-estados-brasileiros-sigla-estado-capital-e-regiao.html"
-    arquivo_populacao_capital = r'C:\Users\Nadia Nogues\Documents\2024\sympla\exercicio-rpa-sympla\arquivo\PopulaçãoxCapital.xlsx'
 
     # Manipulação dos diretorios para organização dos arquivos
     diretorio_atual = os.path.realpath('__file__')
@@ -24,6 +23,7 @@ def main():
     pasta_log = os.path.join(diretorio_atual,"logs")
     pasta_resultados = os.path.join(diretorio_atual,"resultados")
     pasta_bd = os.path.join(diretorio_atual,"banco de dados")
+    pasta_arquivo = os.path.join(diretorio_atual,"arquivo")
 
     # Cria o diretório 'logs' se não existir
     if not os.path.exists(pasta_log):
@@ -53,7 +53,7 @@ def main():
         
         # Le e estrutura o arquivo de entrada
         df_unificado = ler_estruturar_arquivo_entrada(
-            arquivo_populacao_capital, dados_estados
+            pasta_arquivo, dados_estados
         )
         
         # Manipula o banco de dados

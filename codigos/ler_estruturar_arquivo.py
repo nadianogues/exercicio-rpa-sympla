@@ -1,7 +1,8 @@
+import os
 import pandas as pd
 import logging as log
 
-def ler_estruturar_arquivo_entrada(arquivo_populacao_capital, dados_estados):
+def ler_estruturar_arquivo_entrada(pasta_arquivo, dados_estados):
     """
     Leitura e etruturação do arquivo de entrada e união das informações 
     obtidas no site em um data frame.
@@ -23,6 +24,7 @@ def ler_estruturar_arquivo_entrada(arquivo_populacao_capital, dados_estados):
         try:
             # Leitura do arquivo excel para dataframe
             log.info("Leitura do arquivo excel PopulaçãoxCapital.xlsx")
+            arquivo_populacao_capital = os.path.join(pasta_arquivo,"PopulaçãoxCapital.xlsx")
             df_arquivo = pd.read_excel(arquivo_populacao_capital)
         except FileNotFoundError as e:
             log.error(f"Erro: O arquivo não foi encontrado! Caminho fornecido: {arquivo_populacao_capital}")
