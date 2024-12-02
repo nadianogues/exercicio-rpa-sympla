@@ -29,6 +29,7 @@ def criar_inserir_banco_dados(pasta_bd, df_unificado):
             conexao = sqlite3.connect(caminho_bd)
         except Exception as e:
             log.error(f"Erro ao conectar no banco de dados: {e}")
+            raise ValueError()
             
         cursor = conexao.cursor()
 
@@ -62,6 +63,7 @@ def criar_inserir_banco_dados(pasta_bd, df_unificado):
     
     except Exception as e:
         log.error(f"Erro na função criar_inserir_banco_dados: {e}")
+        raise ValueError()
         
 def consultar_salvar_dados(conexao, pasta_resultados):
     """
@@ -138,9 +140,8 @@ def consultar_salvar_dados(conexao, pasta_resultados):
         ORDER BY populacao DESC
         LIMIT 2;
         '''
-
-        # Define nome do arquivo e caminho
         
+        # Define nome do arquivo e caminho
         arquivo_estados_mais_populosos = os.path.join(pasta_resultados, 'estados_mais_populosos.xls')
 
         # Executa consulta e exportar para XLS
@@ -171,3 +172,5 @@ def consultar_salvar_dados(conexao, pasta_resultados):
         log.info("Fim da função de consultar e salvar dados")
     except Exception as e:
         log.error(f"Erro na função consultar_salvar_dados: {e}")
+        raise ValueError()
+        

@@ -40,7 +40,7 @@ def main():
     # Configura o log
     configurar_log(pasta_log)
     
-    log.info("Inicio da automação")
+    log.info("Início da automação")
     
     # Configura o WebDriver
     driver = inicializar_driver()
@@ -62,6 +62,11 @@ def main():
         
         # Consulta no banco de dados e salva os dados
         consultar_salvar_dados(conexao, pasta_resultados)
+        
+        log.info("Finalizou com sucesso")
+        
+    except ValueError as e:
+        log.error(f"Impossível prosseguir, automação parou!")
         
     finally:
         # Fecha o WebDriver
@@ -88,11 +93,12 @@ def configurar_log(pasta_log):
         # Configura o logging
         log.basicConfig(
             level=log.INFO,  # Define o nível mínimo de log
-            format='%(asctime)s - %(levelname)s - %(message)s',  # Formato do log
+            format='%(asctime)s - %(levelname)s - Linha: %(lineno)d - %(funcName)s - %(message)s',  # Formato do log
             handlers=[
                 log.FileHandler(arquivo_log),  # Grava os logs no arquivo com data no nome
                 log.StreamHandler()  # Exibe os logs no console também
-            ]
+            ],
+            datefmt='%Y-%m-%d %H:%M'  # Formato da data e hora sem segundos
         )
     except Exception as e:
         log.error(f"Erro ao configurar o log: {e}")
